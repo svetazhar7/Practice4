@@ -1,4 +1,4 @@
-package com.example.practice4;
+package com.example.practice4_mobile;
 
 import androidx.fragment.app.Fragment;
 

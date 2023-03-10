@@ -3,9 +3,12 @@ package com.example.practice4_mobile;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,6 +55,38 @@ public class FragmentScreenThree extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            // Определяем слушателя касания элемента в RecyclerView
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                // Проверяем, что был сделан щелчок по элементу списка
+                View child = rv.findChildViewUnder(e.getX(), e.getY());
+                if (child != null && e.getAction() == MotionEvent.ACTION_UP) {
+                    // Определяем позицию выбранного элемента в списке
+                    int position = rv.getChildAdapterPosition(child);
+                    // Получаем объект Item по позиции
+                    Item item = items.get(position);
+                    // Показываем Toast сообщение с названием книги
+                    Toast.makeText(getContext(), "Нажатие на: " + item.getText(), Toast.LENGTH_SHORT).show();
+                    // Выводим сообщение в Logcat
+                    Log.d("FragmentScreenThree", "Нажатие на: " + item.getText());
+                    // Возвращаем true, чтобы сообщить, что касание обработано
+                    return true;
+                }
+                // Возвращаем false, чтобы сообщить, что касание не было обработано
+                return false;
+            }
+            //Методы onTouchEvent и onRequestDisallowInterceptTouchEvent добавлены для реализации
+            // интерфейса RecyclerView.OnItemTouchListener.
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+            }
+        });
+
         items = new ArrayList<>();// массив уже для обложек
         random = new Random();// модуль для случайного выбора обложки
 
@@ -75,6 +110,8 @@ public class FragmentScreenThree extends Fragment {
 
         adapter = new MyCustomListAdapter2(items);// создание адаптера
         recyclerView.setAdapter(adapter);// установка адаптера
+
+
     }
 
     public ArrayList<String> getBooksFromFile(Context context) throws IOException//метод для чтения книг построчно из файла

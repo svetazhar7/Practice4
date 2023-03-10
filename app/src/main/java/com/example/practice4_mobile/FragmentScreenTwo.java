@@ -3,8 +3,10 @@ package com.example.practice4_mobile;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,7 +42,14 @@ public class FragmentScreenTwo extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        listView = getView().findViewById(R.id.listview);
+        //обработчик нажатия на элемент ListView
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+            // Получение выбранного элемента
+            Item item = (Item) parent.getItemAtPosition(position);
+            Toast.makeText(getContext(), "Нажатие на: " + item.getText(), Toast.LENGTH_SHORT).show();
+            Log.d("FragmentScreenTwo", "Нажатие на: " + item.getText());
+        });
         String [] detectiveBooks ;//массив для названий книг
         try {
             detectiveBooks = getBooksFromFile(getContext()).toArray(new String[getBooksFromFile(getContext()).size()]);
@@ -59,7 +68,6 @@ public class FragmentScreenTwo extends Fragment {
             Item item = new Item(imageResourceId, detectiveBooks[i]);//установка картинки и названия книги
             items.add(item);
         }
-        listView = getView().findViewById(R.id.listview);
         MyCustomListAdapter adapter = new MyCustomListAdapter(getContext(), R.layout.list_view, items);//создание адаптера
         listView.setAdapter(adapter);//установка адаптера
 
